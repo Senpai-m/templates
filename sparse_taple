@@ -1,0 +1,66 @@
+            #include <bits/stdc++.h>
+                using namespace std;
+      #define vi vector<int>
+            #define vii vector<vector<int>>    
+    struct sparse_taple {
+        vi arr ; vii t;
+        int merge(const int& a, const int& b) {
+            return min(a, b); // a + b , max , gcd , lcm
+        }
+        void build(int n) {
+            arr.resize(n ) , t.resize(n  , vi(64));
+            for (int i = 0; i < n; i ++) cin >> arr[i];
+            for (int i = 0; i < n;  i++) t[i][0] = arr[i];
+            for (int pw = 1 ; (1<<pw) <=n; pw++) {
+                for (int i = 0 ; i + (1 << pw ) <= n ; i ++) {
+                    t[i][pw] = merge(t[i][pw-1] , t[i + (1<<(pw -1))][pw-1]);
+                }
+            }
+        }
+        int query(int l , int r) {
+            int len = r - l + 1;
+            int ret = 1e18;
+          for (int i = 21 ; i >= 0; i--) {
+              if ((len >>i) & 1) {
+                  ret = merge(ret , t[l][i]);
+                  l += (1 << i);
+              }
+          }
+            return  ret;
+        }
+        void print() {
+            int LOG = __lg(arr.size()) + 1;
+            for (int i = 0; i < arr.size(); i++) {
+                for (int j = 0; j < LOG; j++) {
+                    cout << t[i][j] << ' ';
+                }
+                cout << '\n';
+            }
+        }
+    };
+            void solve() {
+    int n; cin >> n;
+            int q; cin >>q;
+                sparse_taple s;
+                s.build(n);
+//s.print();
+             while (q--) {
+                 int l , r; cin >> l >> r;
+                 l-- , r --;
+                 cout << s.query(l , r) << el;
+             }
+
+
+            }
+            signed main() {
+                Banki
+                int __ = 1;
+          //    cin >> __;
+                for (int _ = 1; _<=__; _++) {
+                  //  cout << "Case #" << _ <<" : ";
+                    solve( ) ; cout << el;
+
+                }
+
+                return 0;
+            }
