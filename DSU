@@ -1,0 +1,29 @@
+      #include <bits/stdc++.h>
+                using namespace std;
+
+#define vi vector<int>
+            #define vii vector<vector<int>>
+
+struct DSU {
+    int cnt ;
+    vi parent , sizes;
+    void init(int n) {
+        parent.reserve(n + 1) , sizes.resize(n +1);
+        cnt = n;
+        for (int i = 1 ; i <= n ;i++) {
+            parent[i] = i , sizes[i ]= 1;
+        }
+    }
+    int find_root(int u) {
+        if (parent[u] == u) return u;
+        return parent[u ]= find_root(parent[u]);
+    }
+    void merge(int u , int v) {
+        int root_u = find_root(u) , root_v = find_root(v);
+        if (root_u == root_v) return;
+        if (sizes[root_u] > sizes[root_v]) swap(root_u , root_v);
+        parent[root_u] = root_v;
+        sizes[root_v] += sizes[root_u];
+        cnt--;
+    }
+};
