@@ -1,0 +1,49 @@
+const int N = 3e5+5 , Log = 63;
+const long long INF = -1e15;
+const int MOD = 1000000007;
+int n , q , anc[N][Log] ;vi lvl(N); vi adj[N];
+void binarylefting() {
+        for (int j = 1 ; j <= Log -1 ;  j ++) {
+            for (int i = 1 ; i <= n ; i++) {
+                int p = anc[i][j -1];
+                anc[i][j] = anc[p][j -1];
+            }
+        }
+}
+void BuildAncestor(int node , int par) {
+    anc[node][0] = par;
+    for (int i = 1 ;i < Log; i++) {
+        int pa = anc[node][i-1];
+        anc[node][i] = anc[pa][i-1];
+    }
+    for (auto it:adj[node]) {
+        if (it != par) {
+    lvl[it] = lvl[node] + 1;
+            BuildAncestor(it , node);
+        }
+    }
+}
+int kth(int node , int k) {
+    for (int i = Log -1 ; i >= 0 ; i--) {
+        if ((k >> i) & 1) {
+            node = anc[node][i];
+
+        }
+    }
+    return node;
+}
+int Lca (int u , int v) {
+    if (lvl[v] > lvl[u]) swap(u , v);
+    u = kth(u , lvl[u] - lvl[v]);
+    if (u == v) return u;
+    for (int i = Log -1 ; i >= 0 ; i--) {
+        if (anc[u][i] != anc[v][i]) {
+            u = anc[u][i] , v = anc[v][i];
+        }
+    }
+    return anc[u][0];
+}
+int dist(int u , int v) {
+int lca = Lca(u , v);
+    return lvl[u] + lvl[v] - 2*lvl[lca];
+}
