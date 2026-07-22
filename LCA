@@ -1,7 +1,7 @@
 const int N = 3e5+5 , Log = 63;
 const long long INF = -1e15;
 const int MOD = 1000000007;
-int n , q , anc[N][Log] ;vi lvl(N); vi adj[N];
+int n , q , anc[N][Log] , pre[N];vi lvl(N); vector<pii> adj[N];
 void binarylefting() {
         for (int j = 1 ; j <= Log -1 ;  j ++) {
             for (int i = 1 ; i <= n ; i++) {
@@ -17,9 +17,10 @@ void BuildAncestor(int node , int par) {
         anc[node][i] = anc[pa][i-1];
     }
     for (auto it:adj[node]) {
-        if (it != par) {
-    lvl[it] = lvl[node] + 1;
-            BuildAncestor(it , node);
+        if (it.fi != par) {
+    lvl[it.fi] = lvl[node] + 1;
+            pre[it.fi] = pre[node] + it.se;
+            BuildAncestor(it .fi, node);
         }
     }
 }
@@ -45,5 +46,5 @@ int Lca (int u , int v) {
 }
 int dist(int u , int v) {
 int lca = Lca(u , v);
-    return lvl[u] + lvl[v] - 2*lvl[lca];
+    return pre[u] + pre[v] - 2*pre[lca];
 }
