@@ -1,0 +1,42 @@
+struct XorBasis {
+    static const int BITS = 62; 
+    vector<ll> basis; // basis[i] = a vector with highest set bit == i, or 0 if unused
+    int rank = 0;
+
+    XorBasis() : basis(BITS, 0) {}
+
+    // try to insert x into the basis; returns true if it added a new dimension
+    bool insert(ll x) {
+        for (int i = BITS - 1; i >= 0; i--) {
+            if (!((x >> i) & 1)) continue;
+            if (!basis[i]) { basis[i] = x; rank++; return true; }
+            x ^= basis[i];
+        }
+        return false; // x was already representable by existing basis (became 0)
+    }
+
+    // can x be formed as xor of some subset of inserted elements?
+    bool canRepresent(ll x) {
+        for (int i = BITS - 1; i >= 0; i--) {
+            if (!((x >> i) & 1)) continue;
+            if (!basis[i]) return false;
+            x ^= basis[i];
+        }
+        return true; // x reduced to 0 => representable
+    }
+
+    // maximum XOR achievable using any subset of inserted elements
+    ll maxXor() {
+        ll res = 0;
+        for (int i = BITS - 1; i >= 0; i--) {
+            if ((res ^ basis[i]) > res) res ^= basis[i];
+        }
+        return res;
+    }
+
+    // minimum non-zero XOR achievable (0 if basis is empty)
+    ll minNonZeroXor() {
+        for (int i = 0; i < BITS; i++) if (basis[i]) return basis[i];
+        return 0;
+    }
+};
