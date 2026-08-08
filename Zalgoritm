@@ -1,0 +1,25 @@
+// z[i] = length of the longest common prefix of s and s[i..n-1]
+// z[0] is conventionally left as 0
+vector<int> zFunction(const string &s) {
+    int n = s.size();
+    vector<int> z(n, 0);
+    int l = 0, r = 0; // [l, r) = rightmost matching window found so far
+    for (int i = 1; i < n; i++) {
+        if (i < r) z[i] = min(r - i, z[i - l]);
+        while (i + z[i] < n && s[z[i]] == s[i + z[i]]) z[i]++;
+        if (i + z[i] > r) { l = i; r = i + z[i]; }
+    }
+    return z;
+}
+
+// Example usage: pattern search — find all occurrences of P in T
+vector<int> findOccurrences(const string &P, const string &T) {
+    string s = P + "#" + T; // separator not in P or T
+    vector<int> z = zFunction(s);
+    vector<int> res;
+    int pn = P.size();
+    for (int i = pn + 1; i < (int)s.size(); i++) {
+        if (z[i] == pn) res.push_back(i - pn - 1); // start index in T
+    }
+    return res;
+}
