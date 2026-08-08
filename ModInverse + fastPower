@@ -1,0 +1,17 @@
+long long power(long long base, long long exp, long long mod = MOD) {
+    base %= mod;
+    if (base < 0) base += mod;
+    long long res = 1;
+    while (exp > 0) {
+        if (exp & 1) res = (__int128)res * base % mod;
+        base = (__int128)base * base % mod;
+        exp >>= 1;
+    }
+    return res;
+}
+long long modInverse(long long a, long long mod = MOD) {
+    return power(a, mod - 2, mod);
+}
+long long modDiv(long long a, long long b, long long mod = MOD) {
+    return (__int128)a % mod * modInverse(b, mod) % mod;
+}
