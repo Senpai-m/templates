@@ -1,0 +1,24 @@
+ll phiSingle(ll n) {
+    ll result = n;
+    for (ll p = 2; p * p <= n; p++) {
+        if (n % p == 0) {
+            while (n % p == 0) n /= p;
+            result -= result / p;
+        }
+    }
+    if (n > 1) result -= result / n; // n has one prime factor left > sqrt(original n)
+    return result;
+}
+
+vector<int> phiSieve(int N) {
+    vector<int> phi(N);
+    iota(phi.begin(), phi.end(), 0); // phi[i] = i initially
+    for (int p = 2; p < N; p++) {
+        if (phi[p] == p) { // p is prime (untouched so far)
+            for (int multiple = p; multiple < N; multiple += p) {
+                phi[multiple] -= phi[multiple] / p;
+            }
+        }
+    }
+    return phi;
+}
