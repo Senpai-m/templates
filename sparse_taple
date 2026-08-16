@@ -2,46 +2,52 @@
                 using namespace std;
       #define vi vector<int>
             #define vii vector<vector<int>>    
-    struct sparse_taple {
-        vi arr ; vii t;
-        int merge(const int& a, const int& b) {
-            return min(a, b); // a + b , max , gcd , lcm
-        }
-        void build(int n) {
-            arr.resize(n ) , t.resize(n  , vi(64));
-            for (int i = 0; i < n; i ++) cin >> arr[i];
-            for (int i = 0; i < n;  i++) t[i][0] = arr[i];
-            for (int pw = 1 ; (1<<pw) <=n; pw++) {
-                for (int i = 0 ; i + (1 << pw ) <= n ; i ++) {
-                    t[i][pw] = merge(t[i][pw-1] , t[i + (1<<(pw -1))][pw-1]);
-                }
+     vi arr(N) ; vii t(N , vi(64)) , tt(N , vi(64));
+struct sparse_taple {
+ 
+    int an(const int& a, const int& b) {
+        return (a & b); // a + b , max , gcd , lcm
+    }
+    int G(const int& a, const int& b) {
+        return gcd(a, b);
+    }
+    void build(int n) {
+        for (int i = 0; i < n;  i++) t[i][0] = arr[i];
+        for (int i = 0; i < n;  i++) tt[i][0] = arr[i];
+        for (int pw = 1 ; (1LL<<pw) <=n; pw++) {
+            for (int i = 0 ; i + (1 << pw ) <= n ; i ++) {
+                t[i][pw] = G(t[i][pw-1] , t[i + (1LL<<(pw -1))][pw-1]);
+                tt[i][pw] =an(tt[i][pw-1] , tt[i + (1LL<<(pw -1))][pw-1]);
             }
         }
-        int query(int l , int r) {
-            int len = r - l + 1;
-            int ret = 1e18;
-          for (int i = 21 ; i >= 0; i--) {
-              if ((len >>i) & 1) {
-                  ret = merge(ret , t[l][i]);
-                  l += (1 << i);
-              }
-          }
-            return  ret;
-        }
-int fast_query(int l, int r) {
-    int k = 31 - __builtin_clz(r - l + 1);
-    return merge(t[l][k], t[r - (1 << k) + 1][k]);
-}
-        void print() {
-            int LOG = __lg(arr.size()) + 1;
-            for (int i = 0; i < arr.size(); i++) {
-                for (int j = 0; j < LOG; j++) {
-                    cout << t[i][j] << ' ';
-                }
-                cout << '\n';
+    }
+    // int query(int l , int r) {
+    //     int len = r - l + 1;
+    //     int ret = 1e18;
+    //     for (int i = 21 ; i >= 0; i--) {
+    //         if ((len >>i) & 1) {
+    //             ret = merge(ret , t[l][i]);
+    //             l += (1 << i);
+    //         }
+    //     }
+    //     return  ret;
+    // }
+    int fast_query(int l, int r , int ty) {
+        int k =  __lg(r - l + 1);
+        if (ty == 1)
+        return G(t[l][k], t[r - (1LL << k) + 1LL][k]);
+        return an(tt[l][k] , tt[r - (1LL << k) + 1LL][k]);
+    }
+    void print() {
+        int LOG = __lg(arr.size()) + 1;
+        for (int i = 0; i < arr.size(); i++) {
+            for (int j = 0; j < LOG; j++) {
+                cout << t[i][j] << ' ';
             }
+            cout << '\n';
         }
-    };
+    }
+};
             void solve() {
     int n; cin >> n;
             int q; cin >>q;
